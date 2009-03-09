@@ -28,6 +28,15 @@ sub size {
     return $response->header('Content-Length');
 }
 
+sub last_modified {                                                             
+    my $self    = shift;                                                        
+    my $request = HTTP::Request->new( 'HEAD', $self->url,                       
+        [ 'X-Auth-Token' => $self->cloudfiles->token ] );                       
+    my $response = $self->cloudfiles->request($request);                        
+    confess 'Unknown error' if $response->code != 204;                          
+    return $response->header('Last-Modified');                                  
+}       
+
 sub md5 {
     my $self    = shift;
     my $request = HTTP::Request->new( 'HEAD', $self->url,
